@@ -147,41 +147,9 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('CosmosDbName')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'cosmos-db.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "cosmosDbName": {
-                        "value": "[variables('CosmosDbName')]"
-                    },
-                    "cosmosApiType": {
-                        "value": "SQL"
-                    },
-                    "defaultConsistencyLevel": {
-                        "value": "Strong"
-                    },
-                    "additionalIpAddresses": {
-                        "value": "[parameters('AseOutboundIpAddress')]"
-                    },
-                    "allowConnectionsFromAzureDataCenters": {
-                        "value": false
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
             "resourceGroup": "[variables('SharedResourceGroupName')]",
             "name": "[concat(variables('SharedKeyVaultName'), '-secret-ConnectionString')]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[variables('CosmosDbName')]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -208,9 +176,6 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(variables('CosmosDbName'), '-', parameters('cosmosDatabaseName'))]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[variables('CosmosDbName')]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
