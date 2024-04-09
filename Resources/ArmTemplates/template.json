@@ -147,29 +147,27 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('CosmosDbName')]",
+            "resourceGroup": "[variables('SharedResourceGroupName')]",
+            "name": "[concat(variables('SharedKeyVaultName'), '-secret-ConnectionString')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'cosmos-db.json')]",
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'KeyVault/keyvault-secrets.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "cosmosDbName": {
-                        "value": "[variables('CosmosDbName')]"
+                    "keyVaultName": {
+                        "value": "[variables('SharedKeyVaultName')]"
                     },
-                    "cosmosApiType": {
-                        "value": "SQL"
-                    },
-                    "defaultConsistencyLevel": {
-                        "value": "Strong"
-                    },
-                    "additionalIpAddresses": {
-                        "value": "[parameters('AseOutboundIpAddress')]"
-                    },
-                    "allowConnectionsFromAzureDataCenters": {
-                        "value": false
+                    "secrets": {
+                        "value": [
+                            {
+                                "name": "CompositeUISharedCosmosConnectionString",
+                                "secret": "[concat('AccountEndpoint=https://', variables('CosmosDbName'), '.documents.azure.com:443/;AccountKey=', listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('CosmosDbName')), '2023-11-15').primaryMasterKey, ';')]",
+                                "type": ""
+                            }
+                        ]
                     }
                 }
             }
@@ -208,9 +206,6 @@
             "apiVersion": "2017-05-10",
             "name": "[concat(variables('CosmosDbName'), '-', parameters('cosmosDatabaseName'))]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[variables('CosmosDbName')]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
